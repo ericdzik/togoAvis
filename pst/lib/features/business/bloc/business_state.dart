@@ -21,6 +21,15 @@ class BusinessLoaded extends BusinessState {
   List<Object> get props => [businesses];
 }
 
+class BusinessDetailLoaded extends BusinessState {
+  final BusinessModel business;
+
+  const BusinessDetailLoaded(this.business);
+
+  @override
+  List<Object> get props => [business];
+}
+
 class BusinessError extends BusinessState {
   final String message;
 

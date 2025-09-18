@@ -6,6 +6,8 @@ import 'package:pst/features/auth/bloc/auth_bloc.dart';
 import 'package:pst/features/auth/data/auth_repository.dart';
 import 'package:pst/features/business/bloc/business_bloc.dart';
 import 'package:pst/features/business/data/business_repository.dart';
+import 'package:pst/features/reviews/bloc/review_bloc.dart';
+import 'package:pst/features/reviews/data/review_repository.dart';
 import 'package:pst/firebase_options.dart';
 import 'core/routes/app_router.dart';
 
@@ -30,6 +32,7 @@ void _setupDependencies() {
   // Repositories
   sl.registerSingleton<AuthRepository>(AuthRepository());
   sl.registerSingleton<BusinessRepository>(BusinessRepository());
+  sl.registerSingleton<ReviewRepository>(ReviewRepository());
 
   // Blocs
   // On ne les met pas dans GetIt car leur cycle de vie est géré par flutter_bloc
@@ -66,6 +69,9 @@ class _TogoAvisAppState extends State<TogoAvisApp> {
         BlocProvider<AuthBloc>.value(value: _authBloc),
         BlocProvider<BusinessBloc>(
           create: (_) => BusinessBloc(businessRepository: sl<BusinessRepository>()),
+        ),
+        BlocProvider<ReviewBloc>(
+          create: (_) => ReviewBloc(reviewRepository: sl<ReviewRepository>()),
         ),
       ],
       child: MaterialApp.router(

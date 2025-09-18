@@ -8,3 +8,12 @@ abstract class BusinessEvent extends Equatable {
 }
 
 class LoadBusinesses extends BusinessEvent {}
+
+class GetBusinessById extends BusinessEvent {
+  final String id;
+
+  const GetBusinessById(this.id);
+
+  @override
+  List<Object> get props => [id];
+}

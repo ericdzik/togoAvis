@@ -10,6 +10,7 @@ class BusinessBloc extends Bloc<BusinessEvent, BusinessState> {
       : _businessRepository = businessRepository,
         super(BusinessInitial()) {
     on<LoadBusinesses>(_onLoadBusinesses);
+    on<GetBusinessById>(_onGetBusinessById);
   }
 
   Future<void> _onLoadBusinesses(
@@ -20,6 +21,19 @@ class BusinessBloc extends Bloc<BusinessEvent, BusinessState> {
     try {
       final businesses = await _businessRepository.getBusinesses();
       emit(BusinessLoaded(businesses));
+    } catch (e) {
+      emit(BusinessError(e.toString()));
+    }
+  }
+
+  Future<void> _onGetBusinessById(
+    GetBusinessById event,
+    Emitter<BusinessState> emit,
+  ) async {
+    emit(BusinessLoading());
+    try {
+      final business = await _businessRepository.getBusinessById(event.id);
+      emit(BusinessDetailLoaded(business));
     } catch (e) {
       emit(BusinessError(e.toString()));
     }

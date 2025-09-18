@@ -5,6 +5,7 @@ import 'package:pst/features/auth/bloc/auth_bloc.dart';
 import 'package:pst/features/auth/bloc/auth_state.dart';
 import 'package:pst/features/auth/presentation/pages/login_page.dart';
 import 'package:pst/features/auth/presentation/pages/signup_page.dart';
+import 'package:pst/features/business/presentation/pages/business_detail_page.dart';
 import 'package:pst/features/business/presentation/pages/home_page.dart';
 
 class AppRouter {
@@ -25,6 +26,14 @@ class AppRouter {
         name: 'home',
         path: '/',
         builder: (context, state) => const HomePage(),
+      ),
+      GoRoute(
+        name: 'business_detail',
+        path: '/business/:id',
+        builder: (context, state) {
+          final id = state.pathParameters['id']!;
+          return BusinessDetailPage(businessId: id);
+        },
       ),
       GoRoute(
         name: 'login',

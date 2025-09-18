@@ -26,4 +26,21 @@ class BusinessRepository {
       throw Exception('An unknown error occurred while fetching businesses.');
     }
   }
+
+  /// Récupère une entreprise spécifique par son ID depuis Firestore.
+  Future<BusinessModel> getBusinessById(String id) async {
+    try {
+      final doc = await _firestore.collection('businesses').doc(id).get();
+
+      if (!doc.exists) {
+        throw Exception('Business with ID $id not found.');
+      }
+
+      return BusinessModel.fromMap(doc.id, doc.data()!);
+    } on FirebaseException catch (e) {
+      throw Exception('Failed to get business: ${e.message}');
+    } catch (e) {
+      throw Exception('An unknown error occurred while fetching the business.');
+    }
+  }
 }

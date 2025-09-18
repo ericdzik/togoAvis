@@ -49,4 +49,10 @@ class AuthRepository {
   Stream<User?> get user {
     return _firebaseAuth.authStateChanges();
   }
+
+  /// Récupère l'utilisateur actuel de manière synchrone.
+  /// Peut être `null` si aucun utilisateur n'est connecté.
+  User? get currentUser {
+    return _firebaseAuth.currentUser;
+  }
 }

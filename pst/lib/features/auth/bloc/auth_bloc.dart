@@ -15,18 +15,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     // Souscrire au stream de l'utilisateur dès l'initialisation du BLoC
     _userSubscription = _authRepository.user.listen((user) {
-      add(_AuthUserChanged(user));
+      add(AuthUserChanged(user));
     });
 
-    on<_AuthUserChanged>(_onAuthUserChanged);
+    on<AuthUserChanged>(_onAuthUserChanged);
     on<SignInRequested>(_onSignInRequested);
     on<SignUpRequested>(_onSignUpRequested);
     on<SignOutRequested>(_onSignOutRequested);
   }
 
-  void _onAuthUserChanged(_AuthUserChanged event, Emitter<AuthState> emit) {
-    if (event.user != null) {
-      emit(AuthAuthenticated(event.user!));
+  void _onAuthUserChanged(AuthUserChanged event, Emitter<AuthState> emit) {
+    final user = event.user;
+    if (user != null) {
+      emit(AuthAuthenticated(user));
     } else {
       emit(AuthUnauthenticated());
     }
@@ -63,12 +64,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       // Le succès sera géré par le listener _AuthUserChanged, qui émettra AuthUnauthenticated
     } catch (e) {
       emit(AuthError(e.toString()));
-      // Si la déconnexion échoue, on doit remettre l'état précédent.
-      // Pour la simplicité, on suppose que l'utilisateur est toujours authentifié.
-      // Dans un cas réel, on pourrait vouloir inspecter l'état actuel.
-      final currentUser = _authRepository.user.first; // Ceci est juste un exemple
-      if (await currentUser != null) {
-        emit(AuthAuthenticated(await currentUser!));
+      // Si la déconnexion échoue, on doit remettre l'état précédent,
+      // car l'utilisateur est probablement toujours connecté.
+      final currentUser = _authRepository.currentUser;
+      if (currentUser != null) {
+        emit(AuthAuthenticated(currentUser));
       } else {
         emit(AuthUnauthenticated());
       }

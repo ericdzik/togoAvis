@@ -10,10 +10,10 @@ abstract class AuthEvent extends Equatable {
 
 /// Événement déclenché lorsque l'état de l'utilisateur de Firebase change.
 /// (Utilisation interne au BLoC)
-class _AuthUserChanged extends AuthEvent {
+class AuthUserChanged extends AuthEvent {
   final User? user;
 
-  const _AuthUserChanged(this.user);
+  const AuthUserChanged(this.user);
 
   @override
   List<Object?> get props => [user];

@@ -1,42 +1,82 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'features/auth/bloc/auth_bloc.dart';
-import 'features/auth/data/auth_repository.dart';
+import 'package:get_it/get_it.dart';
+import 'package:pst/features/auth/bloc/auth_bloc.dart';
+import 'package:pst/features/auth/data/auth_repository.dart';
+import 'package:pst/features/business/bloc/business_bloc.dart';
+import 'package:pst/features/business/data/business_repository.dart';
+import 'package:pst/firebase_options.dart';
 import 'core/routes/app_router.dart';
-import 'features/auth/presentation/pages/login_page.dart';
 
-
+// Service Locator
+final sl = GetIt.instance;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  //await Firebase.initializeApp();
 
-  final authRepository = AuthRepository();
+  // Initialiser Firebase
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
-  runApp(TogoAvisApp(authRepository: authRepository));
+  // Configuration de l'injection de dépendances
+  _setupDependencies();
+
+  runApp(const TogoAvisApp());
 }
 
-class TogoAvisApp extends StatelessWidget {
-  final AuthRepository authRepository;
+void _setupDependencies() {
+  // Repositories
+  sl.registerSingleton<AuthRepository>(AuthRepository());
+  sl.registerSingleton<BusinessRepository>(BusinessRepository());
 
-  const TogoAvisApp({super.key, required this.authRepository});
+  // Blocs
+  // On ne les met pas dans GetIt car leur cycle de vie est géré par flutter_bloc
+}
+
+class TogoAvisApp extends StatefulWidget {
+  const TogoAvisApp({super.key});
+
+  @override
+  State<TogoAvisApp> createState() => _TogoAvisAppState();
+}
+
+class _TogoAvisAppState extends State<TogoAvisApp> {
+  late final AuthBloc _authBloc;
+  late final AppRouter _appRouter;
+
+  @override
+  void initState() {
+    super.initState();
+    _authBloc = AuthBloc(authRepository: sl<AuthRepository>());
+    _appRouter = AppRouter(authBloc: _authBloc);
+  }
+
+  @override
+  void dispose() {
+    _authBloc.close();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<AuthBloc>(
-          create: (_) => AuthBloc(authRepository: authRepository),
+        BlocProvider<AuthBloc>.value(value: _authBloc),
+        BlocProvider<BusinessBloc>(
+          create: (_) => BusinessBloc(businessRepository: sl<BusinessRepository>()),
         ),
       ],
-      child: MaterialApp(
+      child: MaterialApp.router(
         title: 'TogoAvis',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primarySwatch: Colors.green,
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
+          useMaterial3: true,
         ),
-        home: const LoginPage(), // ✅ ici tu appelles ta page
+        routerConfig: _appRouter.router,
       ),
     );
   }

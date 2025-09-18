@@ -5,14 +5,14 @@ import 'package:pst/features/auth/bloc/auth_bloc.dart';
 import 'package:pst/features/auth/bloc/auth_event.dart';
 import 'package:pst/features/auth/bloc/auth_state.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class SignUpPage extends StatefulWidget {
+  const SignUpPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<SignUpPage> createState() => _SignUpPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _SignUpPageState extends State<SignUpPage> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -27,7 +27,7 @@ class _LoginPageState extends State<LoginPage> {
   void _submit() {
     if (_formKey.currentState!.validate()) {
       context.read<AuthBloc>().add(
-            SignInRequested(
+            SignUpRequested(
               email: _emailController.text.trim(),
               password: _passwordController.text.trim(),
             ),
@@ -38,7 +38,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Connexion - TogoAvis')),
+      appBar: AppBar(title: const Text('Inscription - TogoAvis')),
       body: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is AuthError) {
@@ -48,7 +48,7 @@ class _LoginPageState extends State<LoginPage> {
                 SnackBar(content: Text(state.message)),
               );
           }
-          // La navigation est gérée par le routeur, donc pas besoin de listener pour AuthAuthenticated ici.
+          // La navigation est gérée par le routeur.
         },
         builder: (context, state) {
           if (state is AuthLoading) {
@@ -63,7 +63,7 @@ class _LoginPageState extends State<LoginPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text('Bienvenue sur TogoAvis 👋', style: TextStyle(fontSize: 24, color: Colors.green)),
+                    const Text('Créer un compte', style: TextStyle(fontSize: 24, color: Colors.green)),
                     const SizedBox(height: 32),
                     TextFormField(
                       controller: _emailController,
@@ -76,7 +76,15 @@ class _LoginPageState extends State<LoginPage> {
                       controller: _passwordController,
                       decoration: const InputDecoration(labelText: 'Mot de passe', border: OutlineInputBorder()),
                       obscureText: true,
-                      validator: (value) => (value?.isEmpty ?? true) ? 'Veuillez entrer un mot de passe' : null,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Veuillez entrer un mot de passe';
+                        }
+                        if (value.length < 6) {
+                          return 'Le mot de passe doit contenir au moins 6 caractères';
+                        }
+                        return null;
+                      },
                     ),
                     const SizedBox(height: 24),
                     ElevatedButton(
@@ -86,13 +94,14 @@ class _LoginPageState extends State<LoginPage> {
                         foregroundColor: Colors.white,
                         minimumSize: const Size(double.infinity, 50),
                       ),
-                      child: const Text('Se connecter'),
+                      child: const Text('S\'inscrire'),
                     ),
                     TextButton(
                       onPressed: () {
-                        context.go('/signup');
+                        // Naviguer vers la page de connexion
+                        context.go('/login');
                       },
-                      child: const Text("Pas encore de compte ? S'inscrire"),
+                      child: const Text('Déjà un compte ? Se connecter'),
                     ),
                   ],
                 ),

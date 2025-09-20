@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:pst/features/business/data/business_model.dart';
+import 'package:pst/features/business/data/mock_business_repository.dart';
 
 class BusinessRepository {
   final FirebaseFirestore _firestore;
@@ -7,8 +8,13 @@ class BusinessRepository {
   BusinessRepository({FirebaseFirestore? firestore})
       : _firestore = firestore ?? FirebaseFirestore.instance;
 
-  /// Récupère la liste des entreprises depuis la collection 'businesses' de Firestore.
+  /// Récupère la liste des entreprises.
+  /// NOTE: Actuellement configuré pour utiliser des données mockées pour le développement de l'UI.
   Future<List<BusinessModel>> getBusinesses() async {
+    // Simule une latence réseau et retourne la liste mockée.
+    return Future.delayed(const Duration(seconds: 1), () => mockBusinesses);
+
+    /* --- Implémentation originale avec Firestore ---
     try {
       final snapshot = await _firestore.collection('businesses').get();
 
@@ -25,6 +31,7 @@ class BusinessRepository {
     } catch (e) {
       throw Exception('An unknown error occurred while fetching businesses.');
     }
+    */
   }
 
   /// Récupère une entreprise spécifique par son ID depuis Firestore.

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "578617644365",
+    "project_id": "togoavis-7e2c1",
+    "storage_bucket": "togoavis-7e2c1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:578617644365:android:16d9bfc91dbe02fcc85304",
+        "android_client_info": {
+          "package_name": "com.eric"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBdTRZW5hVnZnxB61DxFHdzvcFYi-Hyrqk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

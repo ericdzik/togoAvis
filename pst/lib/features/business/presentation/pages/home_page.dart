@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pst/features/auth/bloc/auth_bloc.dart';
 import 'package:pst/features/auth/bloc/auth_event.dart';
 import 'package:pst/features/business/bloc/business_bloc.dart';
@@ -54,6 +55,9 @@ class HomePage extends StatelessWidget {
                   title: Text(business.name),
                   subtitle: Text(business.address),
                   leading: const Icon(Icons.business),
+                  onTap: () {
+                    context.go('/business/${business.id}');
+                  },
                 );
               },
             );

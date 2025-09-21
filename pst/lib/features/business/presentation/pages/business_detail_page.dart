@@ -67,15 +67,21 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                   const SizedBox(height: 16),
                   Text(business.address),
                   const SizedBox(height: 8),
-                  Text(business.contact),
-                  const SizedBox(height: 16),
+                  if (business.contact != null && business.contact!.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: Text(business.contact!),
+                    ),
+                  const SizedBox(height: 8),
                   const Divider(),
                   Text(
                     'À propos',
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                   const SizedBox(height: 8),
-                  Text(business.description),
+                  if (business.description != null &&
+                      business.description!.isNotEmpty)
+                    Text(business.description!),
                   const SizedBox(height: 16),
                   const Divider(),
                   _ReviewsSection(),
